@@ -1,9 +1,13 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::{toc::Toc, track::{AccurateRipUnit, TestAndCopy, TrackEntry, TrackError}, util::Time};
+use crate::{
+    toc::Toc,
+    track::{AccurateRipUnit, TestAndCopy, TrackEntry, TrackError},
+    util::Time,
+};
 
-#[derive(Serialize, Deserialize, PartialEq, TS)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, TS)]
 #[ts(export)]
 pub enum Ripper {
     #[serde(rename = "Exact Audio Copy")]
@@ -28,7 +32,7 @@ pub enum Ripper {
     Other,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, TS)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, TS)]
 #[ts(export)]
 pub enum MediaType {
     Pressed,
@@ -38,7 +42,7 @@ pub enum MediaType {
     Unknown,
 }
 
-#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, TS)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, TS)]
 #[ts(export)]
 pub enum Quartet {
     True,
@@ -47,7 +51,7 @@ pub enum Quartet {
     Unsupported,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, TS)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, TS)]
 #[ts(export)]
 pub enum ReadMode {
     Secure,
@@ -57,7 +61,7 @@ pub enum ReadMode {
     Unknown,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, TS, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, TS, Debug, Clone)]
 #[ts(export)]
 pub struct ReleaseInfo {
     pub artist: String,
@@ -67,8 +71,16 @@ pub struct ReleaseInfo {
 impl ReleaseInfo {
     pub fn new(artist: String, title: String) -> Self {
         Self {
-            artist: if artist.is_empty() { "Unknown Artist".to_owned() } else { artist },
-            title: if title.is_empty() { "Unknown Album".to_owned() } else { title }
+            artist: if artist.is_empty() {
+                "Unknown Artist".to_owned()
+            } else {
+                artist
+            },
+            title: if title.is_empty() {
+                "Unknown Album".to_owned()
+            } else {
+                title
+            },
         }
     }
 }
@@ -79,7 +91,7 @@ impl Default for ReleaseInfo {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, TS)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, TS)]
 #[ts(export)]
 pub enum Gap {
     Append,
@@ -117,7 +129,7 @@ pub trait Extractor {
     fn extract_combined_rw_offset(&self) -> Option<i32> {
         None
     }
-    
+
     fn extract_drive(&self) -> String {
         String::from("Unknown Drive")
     }

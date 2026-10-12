@@ -1,7 +1,7 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-#[derive(Serialize, Deserialize, PartialEq, TS)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Clone, Copy, TS)]
 #[ts(export)]
 pub enum Integrity {
     Match,
@@ -36,11 +36,12 @@ pub trait IntegrityChecker {
 
 impl Integrity {
     pub fn check_integrity(old: &str, new: &str) -> Integrity {
-        if old.is_empty() || new.is_empty() { Integrity::Unknown }
-        else {
+        if old.is_empty() || new.is_empty() {
+            Integrity::Unknown
+        } else {
             match old == new {
                 true => Integrity::Match,
-                false => Integrity::Mismatch
+                false => Integrity::Mismatch,
             }
         }
     }
@@ -51,7 +52,7 @@ impl Checksum {
         Checksum {
             log,
             calculated,
-            integrity
+            integrity,
         }
     }
 }
